@@ -14,10 +14,10 @@ import:
   version: 3ee38a3
 - package: github.com/iris-contrib/middleware
 <% } -%>
-<% if (services.useRedis) { %>
+<% if (services.redis) { %>
 - package: gopkg.in/redis.v4
 <% } -%>
-<% if (services.useNats) { %>
+<% if (services.nats) { %>
 - package: github.com/nats-io/nats
 - package: github.com/nats-io/nuid
 - package: github.com/nats-io/gnatsd

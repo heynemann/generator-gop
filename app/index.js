@@ -83,7 +83,7 @@ var GoCompleteGenerator = generators.Base.extend({
       }, {
         type: 'input',
         name: 'url',
-        message: 'Package url (this url gets included in pypi):',
+        message: 'Package url (this url will be used for all imports):',
         default: guessPackageURL
       }, {
         type: 'input',
@@ -112,7 +112,26 @@ var GoCompleteGenerator = generators.Base.extend({
             month: new Date().getMonth() + 1,
             year: new Date().getFullYear()
           },
-          services: {},
+          services: {
+            HTTP: {
+              require: false,
+            },
+            redis: {
+              require: false,
+            },
+            mongo: {
+              require: false,
+            },
+            postgre: {
+              require: false,
+            },
+            mysql: {
+              require: false,
+            },
+            nats: {
+              require: false,
+            },
+          },
         };
         done()
       })
@@ -122,7 +141,9 @@ var GoCompleteGenerator = generators.Base.extend({
   writing: function () {
     console.log(this.package)
 
+    this._writeMakefile()
     this._writeGlide()
+    this._writeSource()
     //this.mkdir(pkg.pythonName);
     //this.mkdir('tests/');
 
@@ -155,6 +176,18 @@ var GoCompleteGenerator = generators.Base.extend({
 
   _writeGlide: function() {
     this.template('_glide.yaml', 'glide.yaml', this.package)
+  },
+
+  _writeMakefile: function() {
+    this.template('_makefile', 'Makefile', this.package)
+  },
+
+  _writeSource: function() {
+    this.template('_main.go', 'main.go', this.package)
+
+    this.template('_metadata_suite_test.go', 'metadata/metadata_suite_test.go', this.package)
+    this.template('_version.go', 'metadata/version.go', this.package)
+    this.template('_version_test.go', 'metadata/version_test.go', this.package)
   },
 
   _getUsageMessage: function() {
