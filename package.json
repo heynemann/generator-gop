@@ -1,10 +1,10 @@
 {
-  "name": "generator-go-complete",
+  "name": "generator-gop",
   "version": "0.1.0",
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "heynemann/generator-go-complete",
+  "repository": "heynemann/generator-gop",
   "author": {
     "name": "Bernardo Heynemann",
     "email": "heynemann@gmail.com",

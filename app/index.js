@@ -56,7 +56,7 @@ var GoCompleteGenerator = generators.Base.extend({
   prompting: function () {
     var done = this.async();
     var self = this;
-    self.log(yosay('Welcome to Go Complete!!!\n\nRun this generator in your app folder\n(inside $GOPATH)'));
+    self.log(yosay('Welcome to GoP!!!\n\nRun this generator in your app folder\n(inside $GOPATH)'));
 
     getUserNameAndEmail(function(userName, userEmail) {
       var prompts = [{

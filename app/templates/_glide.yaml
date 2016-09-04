@@ -8,6 +8,7 @@ import:
 - package: github.com/uber-go/zap
 - package: github.com/spf13/viper
 - package: github.com/spf13/cobra
+- package: github.com/hashicorp/go-version
 <% if (services.HTTP) { %>
 - package: github.com/valyala/fasthttp
 - package: github.com/kataras/iris
