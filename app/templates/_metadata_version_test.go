@@ -2,7 +2,7 @@ package metadata_test
 
 import (
 	"github.com/hashicorp/go-version"
-	. "<%= url.replace('http://', '').replace('https://', '') %>/metadata"
+	. "<%= importName %>/metadata"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

@@ -1,5 +1,6 @@
 PACKAGES = $(shell glide novendor)
 DIRS = $(shell find ./ -type f -not -path '*/\.*' | grep '.go' | grep -v "^[.]\/vendor" | xargs -n1 dirname | sort | uniq | grep -v '^.$$')
+OS = "$(shell uname | awk '{ print tolower($$0) }')"
 
 setup:
 	@go get -u github.com/onsi/ginkgo/ginkgo
@@ -10,6 +11,19 @@ setup:
 
 build:
 	@go build $(PACKAGES)
+	@go build
+
+cross:
+	@mkdir -p ./bin
+	@echo "Building for linux-i386..."
+	@env GOOS=linux GOARCH=386 go build -o ./bin/<%= name %>-linux-i386
+	@echo "Building for linux-x86_64..."
+	@env GOOS=linux GOARCH=amd64 go build -o ./bin/<%= name %>-linux-x86_64
+	@echo "Building for darwin-i386..."
+	@env GOOS=darwin GOARCH=386 go build -o ./bin/<%= name %>-darwin-i386
+	@echo "Building for darwin-x86_64..."
+	@env GOOS=darwin GOARCH=amd64 go build -o ./bin/<%= name %>-darwin-x86_64
+	@chmod +x bin/*
 
 services:<% if (services.nats.require) { %> gnatsd<%}%><% if (services.redis.require) {%> redis<%}%>
 	@echo "Required services are up."

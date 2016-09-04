@@ -67,18 +67,23 @@ var GoCompleteGenerator = generators.Base.extend({
       }, {
         type: 'input',
         name: 'authorName',
-        message: 'Package author name',
+        message: 'Package author name:',
         default: userName,
         filter: escapeQuotes
       }, {
         type: 'input',
         name: 'authorEmail',
-        message: 'Package author email',
+        message: 'Package author email:',
         default: userEmail
       }, {
         type: 'input',
+        name: 'description',
+        message: 'Description (will be used in the CLI):',
+        default: 'Awesome new go package', 
+      }, {
+        type: 'input',
         name: 'version',
-        message: 'Package initial version',
+        message: 'Package initial version:',
         default: '0.1.0'
       }, {
         type: 'input',
@@ -98,7 +103,9 @@ var GoCompleteGenerator = generators.Base.extend({
 
         self.package = {
           name: props.packageName,
+          description: props.description,
           packageName: goPackageName,
+          importName: props.url.replace('http://', '').replace('https://', ''),
           author: {
             username: getUsername(props.authorEmail),
             name: props.authorName,
@@ -141,6 +148,7 @@ var GoCompleteGenerator = generators.Base.extend({
   writing: function () {
     console.log(this.package)
 
+    this._writeIgnore()
     this._writeMakefile()
     this._writeGlide()
     this._writeSource()
@@ -174,6 +182,10 @@ var GoCompleteGenerator = generators.Base.extend({
     //this.template('_test_version.py', 'tests/test_version.py');
   },
 
+  _writeIgnore: function() {
+    this.template('_gitignore', '.gitignore', this.package)
+  },
+
   _writeGlide: function() {
     this.template('_glide.yaml', 'glide.yaml', this.package)
   },
@@ -185,9 +197,15 @@ var GoCompleteGenerator = generators.Base.extend({
   _writeSource: function() {
     this.template('_main.go', 'main.go', this.package)
 
-    this.template('_metadata_suite_test.go', 'metadata/metadata_suite_test.go', this.package)
-    this.template('_version.go', 'metadata/version.go', this.package)
-    this.template('_version_test.go', 'metadata/version_test.go', this.package)
+    this.template('_suite_test.go', 'metadata/metadata_suite_test.go', Object.assign({ pkg: 'metadata', title: 'Metadata' }, this.package))
+    this.template('_metadata_version.go', 'metadata/version.go', this.package)
+    this.template('_metadata_version_test.go', 'metadata/version_test.go', this.package)
+
+    this.template('_suite_test.go', 'cmd/cmd_suite_test.go', Object.assign({ pkg: 'cmd', title: 'Commands' }, this.package))
+    this.template('_cmd_root.go', 'cmd/root.go', this.package)
+    this.template('_cmd_version.go', 'cmd/version.go', this.package)
+    this.template('_cmd_version_test.go', 'cmd/version_test.go', this.package)
+
   },
 
   _getUsageMessage: function() {

@@ -1,4 +1,4 @@
-package metadata_test
+package <%= pkg %>_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -9,5 +9,5 @@ import (
 
 func TestChannel(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Metadata Suite")
+	RunSpecs(t, "<%= title %> Suite")
 }
