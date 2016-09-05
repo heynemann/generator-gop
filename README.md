@@ -1,4 +1,8 @@
 # gop
+
+[![Build Status](https://travis-ci.org/heynemann/generator-gop.svg?branch=master)](https://travis-ci.org/heynemann/generator-gop)
+[![Coverage Status](https://coveralls.io/repos/github/heynemann/generator-gop/badge.svg?branch=master)](https://coveralls.io/github/heynemann/generator-gop?branch=master)
+
 Gop generator is an yeoman generator that will get you up and running with your go package in seconds.
 
 ## Features

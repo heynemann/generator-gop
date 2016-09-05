@@ -1,7 +1,7 @@
-language: node
+language: go
 
-node:
-  - 6.5.0
+go:
+  - 1.6.2
 
 sudo: required
 
@@ -9,7 +9,10 @@ services:
   - docker
 
 install:
- - NODE_ENV=development npm install
+  - sudo apt-get install -y curl
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.7/install.sh | bash
+  - nvm install 6.5.0
+  - nvm use 6.5.0 && env NODE_ENV=development npm install --only=dev
 
 script:
-  - NODE_ENV=development istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+  - nvm use 6.5.0 && env NODE_ENV=development istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
