@@ -26,5 +26,6 @@ coverage*.out
 vendor/
 docs/_build
 /docs/_build
+/_build
 /bin
 *.coverprofile
