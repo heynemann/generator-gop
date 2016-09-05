@@ -22,9 +22,10 @@ Gop generator is an yeoman generator that will get you up and running with your 
 - [ ] [Docker](https://www.docker.com/) container to run API in Dev Mode with [Docker Compose](https://docs.docker.com/compose/);
 - [ ] Benchmark of API routes;
 - [ ] Static Analysis of syntax, comments and duplicated code;
-- [ ] Allow easy creation of new commands with yo gop:command;
-- [ ] Allow easy creation of migrations with yo gop:migration;
-- [ ] Allow easy creation of API handlers with yo gop:handler;
+- [ ] Allow easy creation of new commands with `yo gop:command`;
+- [ ] Allow easy creation of migrations with `yo gop:migration`;
+- [ ] Allow easy creation of API handlers with `yo gop:handler`;
+- [ ] Easy version handling with `yo gop:major`, `yo gop:minor`, `yo gop:patch`, `yo gop:beta` and `yo gop:rc 1`;
 - [ ] [Sphinx](http://www.sphinx-doc.org/en/stable/) documentation;
 - [ ] [Travis CI](https://travis-ci.org/) ready.
 

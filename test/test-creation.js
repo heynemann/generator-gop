@@ -79,7 +79,7 @@ describe('gop generator', function () {
       })
 
       it('runs cross-compiling', function(done) {
-        this.timeout(30000);
+        this.timeout(60000);
         runBinary('make setup cross', function(error, stdout, stderr) {
           expect(error).to.be.null
 
