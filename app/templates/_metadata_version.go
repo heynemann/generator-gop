@@ -36,7 +36,7 @@ func GetVersion(v ...*Version) string {
 	if version.Beta {
 		rc = "-beta"
 	} else {
-		if version.ReleaseCandidate > -1 {
+		if version.ReleaseCandidate > 0 {
 			rc = fmt.Sprintf("-rc.%d", version.ReleaseCandidate)
 		}
 	}
