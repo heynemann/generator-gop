@@ -11,6 +11,7 @@ Gop generator is an yeoman generator that will get you up and running with your 
 - [x] Comprehensive Makefile to build, test, analyze and document your Go Package;
 - [x] [Glide](https://glide.sh/) package manager;
 - [x] [Ginkgo](https://onsi.github.io/ginkgo/) and [Gomega](http://onsi.github.io/gomega/) test suite with Coverage support;
+- [x] Generated code has 100% code coverage in [Ginkgo](https://onsi.github.io/ginkgo/) test suite;
 - [x] [SemVer](http://semver.org/) compatible metadata versioning;
 - [x] Cross-compiling of package to Darwin and Linux, for both x86_64 and i386 architectures;
 - [x] [Cobra](https://github.com/spf13/cobra) commands;
