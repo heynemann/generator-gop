@@ -14,8 +14,7 @@
     "node": ">=6.5.0"
   },
   "scripts": {
-    "test": "mocha",
-    "cover": "./node_modules/.bin/istanbul cover _mocha"
+    "test": "./node_modules/.bin/istanbul cover _mocha"
   },
   "files": [
     "app"
