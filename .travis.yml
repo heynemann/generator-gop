@@ -12,7 +12,7 @@ install:
   - sudo apt-get install -y curl
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.7/install.sh | bash
   - nvm install 6.5.0
-  - nvm use 6.5.0 && env NODE_ENV=development npm install --only=dev
+  - nvm use 6.5.0 && env NODE_ENV=development npm install
 
 script:
   - nvm use 6.5.0 && env NODE_ENV=development istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

@@ -67,7 +67,9 @@ Just fork, go to a feature branch, make your changes, run tests and open a pull 
 
 To run the generator locally, in order to test changes:
 
+```
 $ npm link
+```
 
 After linking you'll be able to run `yo gop` commands.
 
