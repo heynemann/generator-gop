@@ -13,7 +13,7 @@ var VersionCmd = &cobra.Command{
 	Short: "returns <%= name %> version",
 	Long:  `returns <%= name %> version`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("<%= name %> v%s\n", metadata.VERSION)
+		fmt.Printf("<%= name %> v%s\n", metadata.GetVersion())
 	},
 }
 
