@@ -3,6 +3,7 @@ Gop generator is an yeoman generator that will get you up and running with your 
 
 ## Features
 
+- [x] Thorough suite of unit tests for generator code;
 - [x] Comprehensive Makefile to build, test, analyze and document your Go Package;
 - [x] [Glide](https://glide.sh/) package manager;
 - [x] [Ginkgo](https://onsi.github.io/ginkgo/) and [Gomega](http://onsi.github.io/gomega/) test suite with Coverage support;
