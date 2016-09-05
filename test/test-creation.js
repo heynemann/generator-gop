@@ -27,94 +27,72 @@ const getCoverage = function(stdout) {
 }
 
 describe('gop generator', function () {
-  beforeEach(function () {
-    const self = this
-    expect(gopath).to.not.be.null
-    return helpers.
-      run(path.join(__dirname, '../app')).
-      on('ready', function (generator) {
-        self.generator = generator
-      }).
-      inDir(path.join(gopath, 'src/github.com/heynemann/test-package')).
-      withPrompts({
-        packageName: 'test-package',
-        description: 'an incredible python package',
-        keywords: 'test package',
-        authorName: 'Bernardo Heynemann',
-        authorEmail: 'heynemann@gmail.com',
-        url: 'https://github.com/heynemann/test-package',
-        license: 'MIT',
-        services: ['redis'],
-      }).toPromise()
+  describe('main command', function() {
+    describe('without services', function() {
+      beforeEach(function () {
+        const self = this
+        expect(gopath).to.not.be.null
+        return helpers.
+          run(path.join(__dirname, '../app')).
+          on('ready', function (generator) {
+            self.generator = generator
+          }).
+          inDir(path.join(gopath, 'src/github.com/heynemann/test-package')).
+          withPrompts({
+            packageName: 'test-package',
+            description: 'an incredible python package',
+            keywords: 'test package',
+            authorName: 'Bernardo Heynemann',
+            authorEmail: 'heynemann@gmail.com',
+            url: 'https://github.com/heynemann/test-package',
+            license: 'MIT',
+            services: [],
+          }).toPromise()
+      })
+
+      it('creates expected files', function () {
+        var expected = [];
+        for (var i=0; i < this.generator.packageContents.length; i++) {
+          const item = this.generator.packageContents[i]
+          expected.push(item.target)
+        }
+
+        assert.file(expected)
+      })
+
+      it('runs setup', function(done) {
+        this.timeout(15000);
+        runBinary('make setup', function(error, stdout, stderr) {
+          expect(error).to.be.null
+          done()
+        });
+      })
+
+      it('runs tests', function(done) {
+        this.timeout(30000);
+        runBinary('make setup test', function(error, stdout, stderr) {
+          expect(error).to.be.null
+
+          expect(getCoverage(stdout)).to.equal(100.0)
+          done()
+        });
+      })
+
+      it('runs cross-compiling', function(done) {
+        this.timeout(15000);
+        runBinary('make cross', function(error, stdout, stderr) {
+          expect(error).to.be.null
+
+          assert.file([
+            'bin/test-package-linux-i386',
+            'bin/test-package-linux-x86_64',
+            'bin/test-package-darwin-i386',
+            'bin/test-package-darwin-x86_64',
+          ])
+
+          done()
+        })
+      })
+    })
   })
-
-  it('creates expected files', function () {
-    var expected = [];
-    for (var i=0; i < this.generator.packageContents.length; i++) {
-      const item = this.generator.packageContents[i]
-      expected.push(item.target)
-    }
-
-    assert.file(expected)
-  })
-
-  it('runs setup', function(done) {
-    this.timeout(15000);
-    runBinary('make setup', function(error, stdout, stderr) {
-      expect(error).to.be.null
-      done()
-    });
-  })
-
-  it('runs tests', function(done) {
-    this.timeout(30000);
-    runBinary('make setup test', function(error, stdout, stderr) {
-      expect(error).to.be.null
-
-      expect(getCoverage(stdout)).to.equal(100.0)
-      done()
-    });
-  })
-
-  //it('creates Makefile with right targets files', function (done) {
-    //this.app.run({}, function () {
-      //helpers.assertFileContent('Makefile', /list:/);
-      //helpers.assertFileContent('Makefile', /no_targets__:/);
-      //helpers.assertFileContent('Makefile', /setup:/);
-      //helpers.assertFileContent('Makefile', /test:/);
-      //helpers.assertFileContent('Makefile', /unit:/);
-      //helpers.assertFileContent('Makefile', /redis:/);
-      //helpers.assertFileContent('Makefile', /kill_redis:/);
-      //helpers.assertFileContent('Makefile', /redis_test:/);
-      //helpers.assertFileContent('Makefile', /kill_redis_test:/);
-      //helpers.assertFileContent('Makefile', /mongo:/);
-      //helpers.assertFileContent('Makefile', /kill_mongo:/);
-      //helpers.assertFileContent('Makefile', /clear_mongo:/);
-      //helpers.assertFileContent('Makefile', /mongo_test:/);
-      //helpers.assertFileContent('Makefile', /kill_mongo_test:/);
-      //helpers.assertFileContent('Makefile', /tox:/);
-      //done();
-    //});
-  //});
-
-  //it('creates setup.py with right elements', function (done) {
-    //this.app.run({}, function () {
-      //helpers.assertFileContent('setup.py', /from test_package import __version__/);
-      //helpers.assertFileContent('setup.py', /name='test-package',/);
-      //helpers.assertFileContent('setup.py', /    version=__version__,/);
-      //helpers.assertFileContent('setup.py', /    description='an incredible python package',/);
-      //helpers.assertFileContent('setup.py', /\nan incredible python package\n/);
-      //helpers.assertFileContent('setup.py', /    keywords='test package',/);
-      //helpers.assertFileContent('setup.py', /    author='Pablo Santiago Blum de Aguiar',/);
-      //helpers.assertFileContent('setup.py', /    author_email='scorphus@gmail.com',/);
-      //helpers.assertFileContent('setup.py', /    url='https:\/\/github.com\/someuser\/somepackage',/);
-      //helpers.assertFileContent('setup.py', /    license='MIT',/);
-      //helpers.assertFileContent('setup.py', /        'Programming Language :: Python :: 2.7',/);
-      //helpers.assertFileContent('setup.py', /    include_package_data=False,/);
-      //helpers.assertFileContent('setup.py', /        'pymongo',/);
-      //helpers.assertFileContent('setup.py', /        'redis',/);
-      //done();
-    //});
-  //});
-
-});
+})

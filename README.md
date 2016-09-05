@@ -26,8 +26,47 @@ Gop generator is an yeoman generator that will get you up and running with your 
 ### Supported Services
 
 - [ ] [Iris](http://iris-go.com/)-powered HTTP API;
-- [ ] [Redis](http://redis.io/) Database using [redis](https://github.com/go-redis/redis) as the library;
+- [ ] [Redis](http://redis.io/) Service using [redis](https://github.com/go-redis/redis) as the library;
 - [ ] [MongoDB](https://www.mongodb.com/) Database using [mgo](https://labix.org/mgo) as the ORM;
 - [ ] [Nats](https://nats.io/) PubSub using [nats](https://github.com/nats-io/nats) as the library;
+- [ ] [ElasticSearch](https://www.elastic.co/) Service using [elastic](https://github.com/olivere/elastic) as the library;
 - [ ] [PostgreSQL](https://www.postgresql.org/) Database using [PG](https://github.com/go-pg/pg) as the ORM;
 - [ ] [MySQL](https://www.mysql.com/) Database using [GORM](https://github.com/jinzhu/gorm) as the ORM.
+
+## Getting started
+
+Make sure you have the latest version of Yeoman:
+
+```
+$ npm install -g yo
+```
+
+To install generator-gop from npm, run:
+
+```
+$ npm install -g generator-gop
+```
+
+## Usage
+
+Go to your package directory (must be inside `$GOPATH`) and run:
+
+```
+$ yo gop
+```
+
+## Contributing
+
+Just fork, go to a feature branch, make your changes, run tests and open a pull request. Rinse and repeat!
+
+### Installing locally
+
+To run the generator locally, in order to test changes:
+
+$ npm link
+
+After linking you'll be able to run `yo gop` commands.
+
+### Running tests
+
+Just run `npm test` and wait. The tests take a while due to glide installing the packages and go compiling the binary.
