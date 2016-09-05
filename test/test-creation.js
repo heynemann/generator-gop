@@ -1,97 +1,120 @@
 /*global describe, beforeEach, it */
 'use strict';
-var path = require('path');
-var helpers = require('yeoman-generator').test;
+const path = require('path')
+const helpers = require('yeoman-test')
+const assert = require('yeoman-assert');
+const chai = require('chai')
+const expect = chai.expect;
+const gopath = process.env.GOPATH
+const exec = require('child_process').exec;
 
-describe('python-package generator', function () {
-  beforeEach(function (done) {
-    helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
-      if (err) {
-        return done(err);
-      }
+const runBinary = function(command, cb) {
+  exec(command, cb)
+}
 
-      this.app = helpers.createGenerator('python-package:app', ['../../app']);
-      done();
+const getCoverage = function(stdout) {
+  const re = /(?:coverage[:]\s*(\d+[.]\d+)[%])/gi
+  let coverage = 0
+  let coverageCount = 1
+  let result = re.exec(stdout)
+  while (result) {
+    coverage += parseFloat(result[1])
+    coverageCount++
+    result = re.exec(stdout)
+  }
 
-      this.app.options['skip-install'] = true;
+  return coverage / Math.max(coverageCount - 1, 1)
+}
 
-      helpers.mockPrompt(this.app, {
+describe('gop generator', function () {
+  beforeEach(function () {
+    const self = this
+    expect(gopath).to.not.be.null
+    return helpers.
+      run(path.join(__dirname, '../app')).
+      on('ready', function (generator) {
+        self.generator = generator
+      }).
+      inDir(path.join(gopath, 'src/github.com/heynemann/test-package')).
+      withPrompts({
         packageName: 'test-package',
-        pythonVersions: ['2.7@py27@Python :: 2.7'],
         description: 'an incredible python package',
         keywords: 'test package',
-        authorName: 'Pablo Santiago Blum de Aguiar',
-        authorEmail: 'scorphus@gmail.com',
-        url: 'https://github.com/someuser/somepackage',
+        authorName: 'Bernardo Heynemann',
+        authorEmail: 'heynemann@gmail.com',
+        url: 'https://github.com/heynemann/test-package',
         license: 'MIT',
-        services: ['mongodb', 'redis'],
-      });
-    }.bind(this));
-  });
+        services: ['redis'],
+      }).toPromise()
+  })
 
-  it('creates expected files', function (done) {
-    var expected = [
-      'setup.py',
-      'Makefile',
-      '.coveragerc',
-      'tox.ini',
-      '.gitignore',
-      '.travis.yml',
-      'MANIFEST.in',
-      'redis.conf',
-      'redis.tests.conf',
-      'test_package/__init__.py',
-      'test_package/version.py',
-      'tests/__init__.py',
-      'tests/base.py',
-      'tests/test_version.py',
-    ];
+  it('creates expected files', function () {
+    var expected = [];
+    for (var i=0; i < this.generator.packageContents.length; i++) {
+      const item = this.generator.packageContents[i]
+      expected.push(item.target)
+    }
 
-    this.app.run({}, function () {
-      helpers.assertFile(expected);
-      done();
+    assert.file(expected)
+  })
+
+  it('runs setup', function(done) {
+    this.timeout(15000);
+    runBinary('make setup', function(error, stdout, stderr) {
+      expect(error).to.be.null
+      done()
     });
-  });
+  })
 
-  it('creates Makefile with right targets files', function (done) {
-    this.app.run({}, function () {
-      helpers.assertFileContent('Makefile', /list:/);
-      helpers.assertFileContent('Makefile', /no_targets__:/);
-      helpers.assertFileContent('Makefile', /setup:/);
-      helpers.assertFileContent('Makefile', /test:/);
-      helpers.assertFileContent('Makefile', /unit:/);
-      helpers.assertFileContent('Makefile', /redis:/);
-      helpers.assertFileContent('Makefile', /kill_redis:/);
-      helpers.assertFileContent('Makefile', /redis_test:/);
-      helpers.assertFileContent('Makefile', /kill_redis_test:/);
-      helpers.assertFileContent('Makefile', /mongo:/);
-      helpers.assertFileContent('Makefile', /kill_mongo:/);
-      helpers.assertFileContent('Makefile', /clear_mongo:/);
-      helpers.assertFileContent('Makefile', /mongo_test:/);
-      helpers.assertFileContent('Makefile', /kill_mongo_test:/);
-      helpers.assertFileContent('Makefile', /tox:/);
-      done();
-    });
-  });
+  it('runs tests', function(done) {
+    this.timeout(30000);
+    runBinary('make setup test', function(error, stdout, stderr) {
+      expect(error).to.be.null
 
-  it('creates setup.py with right elements', function (done) {
-    this.app.run({}, function () {
-      helpers.assertFileContent('setup.py', /from test_package import __version__/);
-      helpers.assertFileContent('setup.py', /name='test-package',/);
-      helpers.assertFileContent('setup.py', /    version=__version__,/);
-      helpers.assertFileContent('setup.py', /    description='an incredible python package',/);
-      helpers.assertFileContent('setup.py', /\nan incredible python package\n/);
-      helpers.assertFileContent('setup.py', /    keywords='test package',/);
-      helpers.assertFileContent('setup.py', /    author='Pablo Santiago Blum de Aguiar',/);
-      helpers.assertFileContent('setup.py', /    author_email='scorphus@gmail.com',/);
-      helpers.assertFileContent('setup.py', /    url='https:\/\/github.com\/someuser\/somepackage',/);
-      helpers.assertFileContent('setup.py', /    license='MIT',/);
-      helpers.assertFileContent('setup.py', /        'Programming Language :: Python :: 2.7',/);
-      helpers.assertFileContent('setup.py', /    include_package_data=False,/);
-      helpers.assertFileContent('setup.py', /        'pymongo',/);
-      helpers.assertFileContent('setup.py', /        'redis',/);
-      done();
+      expect(getCoverage(stdout)).to.equal(100.0)
+      done()
     });
-  });
+  })
+
+  //it('creates Makefile with right targets files', function (done) {
+    //this.app.run({}, function () {
+      //helpers.assertFileContent('Makefile', /list:/);
+      //helpers.assertFileContent('Makefile', /no_targets__:/);
+      //helpers.assertFileContent('Makefile', /setup:/);
+      //helpers.assertFileContent('Makefile', /test:/);
+      //helpers.assertFileContent('Makefile', /unit:/);
+      //helpers.assertFileContent('Makefile', /redis:/);
+      //helpers.assertFileContent('Makefile', /kill_redis:/);
+      //helpers.assertFileContent('Makefile', /redis_test:/);
+      //helpers.assertFileContent('Makefile', /kill_redis_test:/);
+      //helpers.assertFileContent('Makefile', /mongo:/);
+      //helpers.assertFileContent('Makefile', /kill_mongo:/);
+      //helpers.assertFileContent('Makefile', /clear_mongo:/);
+      //helpers.assertFileContent('Makefile', /mongo_test:/);
+      //helpers.assertFileContent('Makefile', /kill_mongo_test:/);
+      //helpers.assertFileContent('Makefile', /tox:/);
+      //done();
+    //});
+  //});
+
+  //it('creates setup.py with right elements', function (done) {
+    //this.app.run({}, function () {
+      //helpers.assertFileContent('setup.py', /from test_package import __version__/);
+      //helpers.assertFileContent('setup.py', /name='test-package',/);
+      //helpers.assertFileContent('setup.py', /    version=__version__,/);
+      //helpers.assertFileContent('setup.py', /    description='an incredible python package',/);
+      //helpers.assertFileContent('setup.py', /\nan incredible python package\n/);
+      //helpers.assertFileContent('setup.py', /    keywords='test package',/);
+      //helpers.assertFileContent('setup.py', /    author='Pablo Santiago Blum de Aguiar',/);
+      //helpers.assertFileContent('setup.py', /    author_email='scorphus@gmail.com',/);
+      //helpers.assertFileContent('setup.py', /    url='https:\/\/github.com\/someuser\/somepackage',/);
+      //helpers.assertFileContent('setup.py', /    license='MIT',/);
+      //helpers.assertFileContent('setup.py', /        'Programming Language :: Python :: 2.7',/);
+      //helpers.assertFileContent('setup.py', /    include_package_data=False,/);
+      //helpers.assertFileContent('setup.py', /        'pymongo',/);
+      //helpers.assertFileContent('setup.py', /        'redis',/);
+      //done();
+    //});
+  //});
 
 });
