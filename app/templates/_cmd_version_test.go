@@ -21,6 +21,6 @@ var _ = Describe("Version Command", func() {
 		VersionCmd.Run(VersionCmd, []string{})
 		ResetStdout()
 		result := ReadStdout()
-		Expect(result).To(BeEquivalentTo(fmt.Sprintf("<%= name %> v%s\n", VERSION)))
+		Expect(result).To(BeEquivalentTo(fmt.Sprintf("<%= name %> v%s\n", GetVersion())))
 	})
 })
