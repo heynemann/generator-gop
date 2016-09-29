@@ -40,7 +40,7 @@ describe('gop generator', function () {
           inDir(path.join(gopath, 'src/github.com/heynemann/test-package')).
           withPrompts({
             packageName: 'test-package',
-            description: 'an incredible python package',
+            description: 'an incredible go package',
             keywords: 'test package',
             authorName: 'Bernardo Heynemann',
             authorEmail: 'heynemann@gmail.com',
