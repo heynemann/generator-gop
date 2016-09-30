@@ -22,7 +22,7 @@ var _ = Describe("Metadata", func() {
 				Major: 10,
 				Minor: 12,
 				Patch: 25,
-				Beta: true,
+				Beta:  true,
 			})
 
 			Expect(v).To(Equal("10.12.25-beta"))
@@ -33,9 +33,9 @@ var _ = Describe("Metadata", func() {
 
 		It("Should return rc version", func() {
 			v := GetVersion(&Version{
-				Major: 10,
-				Minor: 12,
-				Patch: 25,
+				Major:            10,
+				Minor:            12,
+				Patch:            25,
 				ReleaseCandidate: 3,
 			})
 
@@ -47,10 +47,10 @@ var _ = Describe("Metadata", func() {
 
 		It("Should return beta version if both are set", func() {
 			v := GetVersion(&Version{
-				Major: 10,
-				Minor: 12,
-				Patch: 25,
-				Beta: true,
+				Major:            10,
+				Minor:            12,
+				Patch:            25,
+				Beta:             true,
 				ReleaseCandidate: 3,
 			})
 
